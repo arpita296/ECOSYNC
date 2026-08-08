@@ -1,25 +1,20 @@
-````markdown
-# 🌍 EcoSync — Next-Generation Carbon-Aware Web Optimization Toolkit
 
-> **Building a greener web by adapting digital experiences to real-time electricity grid carbon intensity.**
+# EcoSync — Next-Generation Carbon-Aware Web Optimization Toolkit
+
+ **Building a greener web by adapting digital experiences to real-time electricity grid carbon intensity.**
 
 EcoSync is an enterprise-grade, drop-in web SDK designed to optimize website energy consumption based on the live carbon intensity of the user's local electricity grid. Inspired by sustainable web design principles, EcoSync intelligently detects the user's approximate location, retrieves real-time carbon telemetry, and dynamically adjusts website rendering to reduce energy usage during periods of high fossil-fuel dependency.
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🌎 Automatic user geolocation
-- ⚡ Live grid carbon intensity monitoring
-- 🎨 Dynamic UI optimization based on carbon emissions
-- 🌑 OLED True Black mode for additional power savings
-- 🎞 Intelligent animation throttling
-- 🖼 Adaptive media loading and staging
-- 📉 Reduced computational overhead
-- 🔌 Drop-in SDK requiring minimal integration
-- 🚀 Edge-compatible architecture for low-latency execution
-
----
+-  Automatic user geolocation
+-  Live grid carbon intensity monitoring
+-  Dynamic UI optimization based on carbon emissions
+-  Adaptive media loading and staging
+- Reduced computational overhead
+-  Edge-compatible architecture for low-latency execution
 
 # 🏗 System Architecture
 
