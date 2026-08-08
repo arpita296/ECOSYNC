@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Daily Chronicle | Premium Indian News</title>
+    <!-- Classic Newspaper Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;0,900;1,300&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Reset & Variables --- */
+        :root {
+            --bg: #f9f9f7;
+            --surface: #ffffff;
+            --text-main: #111111;
+            --text-muted: #555555;
+            --border: #cccccc;
+            --accent: #8b0000;
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --border: #333333;
+            --accent: #ff4d4d;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .brand, .serif {
+            font-family: 'Merriweather', serif;
+        }
+
+        a { text-decoration: none; color: inherit; cursor: pointer; transition: color 0.2s; }
+        a:hover { color: var(--accent); }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding-top: 20px;
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px 10px;
+            align-items: center;
+        }
+
+        .theme-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-btn:hover {
+            background: var(--text-main);
+            color: var(--bg);
+        }
+
+        .brand {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin: 15px 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 15px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 2px solid var(--text-main);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav a { font-weight: 600; text-transform: uppercase; font-size: 14px; position: relative; }
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+
+        /* --- Breaking News Ticker --- */
+        .ticker-wrap {
+            width: 100%;
+            background: var(--text-main);
+            color: var(--bg);
+            height: 35px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .ticker-heading {
+            background: var(--accent);
+            color: #fff;
+            padding: 0 15px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+            white-space: nowrap;
+        }
+        .ticker-move {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 25s linear infinite;
+            padding-left: 20px;
+        }
+        .ticker-move:hover { animation-play-state: paused; }
+        .ticker-item { margin-right: 50px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .ticker-item:hover { text-decoration: underline; }
+
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- View Containers --- */
+        .view-section {
+            display: none;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Home View Grid --- */
+        .home-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+
+        .hero-article { cursor: pointer; }
+        .hero-img-wrapper { overflow: hidden; margin-bottom: 15px; }
+        .hero-img { width: 100%; height: 400px; object-fit: cover; filter: grayscale(10%); transition: transform 0.6s ease; }
+        .hero-article:hover .hero-img { transform: scale(1.03); }
+        .hero-title { font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 15px; transition: color 0.3s; }
+        .hero-article:hover .hero-title { color: var(--accent); }
+        .hero-excerpt { font-size: 1.1rem; color: var(--text-muted); }
+        .meta { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: block; }
+
+        .sidebar { border-left: 1px solid var(--border); padding-left: 40px; }
+        .sidebar h3 { font-size: 1.2rem; border-bottom: 2px solid var(--text-main); padding-bottom: 5px; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .side-article { margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 25px; cursor: pointer; transition: transform 0.2s ease; }
+        .side-article:last-child { border-bottom: none; }
+        .side-article:hover { transform: translateX(5px); }
+        .side-title { font-size: 1.2rem; font-weight: 700; line-height: 1.3; transition: color 0.2s; }
+        .side-article:hover .side-title { color: var(--accent); }
+
+        /* --- Secondary Grid & Videos --- */
+        .section-divider {
+            border-top: 4px double var(--text-main);
+            padding-top: 30px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .secondary-news, .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-article { cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 4px; }
+        .grid-article:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
+        .grid-img-wrapper { overflow: hidden; margin-bottom: 10px; border-radius: 4px; }
+        .grid-article img { width: 100%; height: 200px; object-fit: cover; transition: transform 0.6s ease; display: block; }
+        .grid-article:hover img { transform: scale(1.08); }
+        .grid-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; transition: color 0.2s; }
+        .grid-article:hover .grid-title { color: var(--accent); }
+        .grid-article .meta, .side-article .meta { transition: background-color 0.25s ease, color 0.25s ease; border-radius: 3px; padding: 2px 4px; margin-left: -4px; }
+        .grid-article:hover .meta, .side-article:hover .meta { background: var(--accent); color: #fff; }
+
+        /* Video Hover Cards */
+        .video-card { cursor: pointer; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 4px; }
+        .video-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
+        .video-wrapper { overflow: hidden; margin-bottom: 10px; position: relative; background: #000; border-radius: 4px; }
+        .video-card video { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            display: block; 
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        .video-card:hover video { opacity: 1; }
+        .play-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .live-badge { display: flex; align-items: center; background: rgba(139,0,0,0.85); }
+        .mute-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            border: none;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 3;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .mute-btn:hover { background: var(--accent); transform: scale(1.1); }
+
+        /* --- Article View --- */
+        .article-header { text-align: center; max-width: 800px; margin: 0 auto 30px; }
+        .article-title { font-size: 3rem; margin-bottom: 20px; line-height: 1.2; }
+        .article-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;}
+        .article-hero-img { width: 100%; max-height: 500px; object-fit: cover; margin-bottom: 40px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .article-body { max-width: 800px; margin: 0 auto; font-size: 1.2rem; line-height: 1.8; font-family: 'Merriweather', serif; }
+        .article-body p { margin-bottom: 25px; }
+
+        @media (max-width: 900px) {
+            .home-grid { grid-template-columns: 1fr; }
+            .sidebar { border-left: none; padding-left: 0; }
+            .secondary-news, .video-grid { grid-template-columns: 1fr; }
+            .brand { font-size: 2rem; }
+        }
+
+        /* --- Reveal Animations (CSS keyframe based — plays automatically on insert, no scroll dependency) --- */
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(35px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal {
+            opacity: 0;
+            animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* --- Ken Burns effect for hero image --- */
+        @keyframes kenburns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.12); }
+        }
+        .hero-img { animation: kenburns 12s ease-in-out infinite alternate; }
+        .hero-article:hover .hero-img { animation-play-state: paused; transform: scale(1.03); }
+
+        /* --- Pulsing live/breaking dot --- */
+        .live-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            margin-right: 6px;
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        /* --- Reading progress bar --- */
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--accent);
+            z-index: 999;
+            transition: width 0.1s ease-out;
+        }
+
+        /* --- Back to top button --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 25px; right: 25px;
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 200;
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .back-to-top:hover { transform: translateY(-4px) scale(1.05); color: #fff; }
+
+        /* --- Section divider fade underline --- */
+        .section-divider { position: relative; }
+
+        /* --- Skeleton shimmer while media loads --- */
+        .grid-img-wrapper img, .hero-img, .video-card video, .article-hero-img {
+            background: linear-gradient(110deg, var(--border) 8%, var(--surface) 18%, var(--border) 33%);
+            background-size: 200% 100%;
+        }
+
+        /* --- Category badge pop-in --- */
+        @keyframes popIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .meta { animation: popIn 0.4s ease; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-img, .live-dot, .meta { animation: none !important; }
+            .reveal { transition: none; animation: none !important; opacity: 1; transform: none; }
+        }
+
+        /* --- Custom Mouse Pointer Effect --- */
+        body.custom-cursor-active, body.custom-cursor-active * {
+            cursor: none !important;
+        }
+        .cursor-dot, .cursor-ring {
+            position: fixed;
+            top: 0; left: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            transition: opacity 0.2s ease, background-color 0.3s ease;
+        }
+        .cursor-ring {
+            width: 36px; height: 36px;
+            border: 1.5px solid var(--accent);
+            opacity: 0.6;
+            transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease, border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .cursor-ring.hovering {
+            width: 56px; height: 56px;
+            background: rgba(139, 0, 0, 0.08);
+            opacity: 0.9;
+        }
+        .cursor-ring.clicking { width: 30px; height: 30px; }
+        .cursor-dot.hidden, .cursor-ring.hidden { opacity: 0; }
+
+        @media (hover: none), (max-width: 900px) {
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="top-bar">
+            <span id="current-date">Date</span>
+            <span>Kolkata, India Edition</span>
+            <button class="theme-btn" id="theme-toggle">Dark Mode</button>
+        </div>
+        <a href="#home"><div class="brand">The Daily Chronicle</div></a>
+        <nav id="main-nav">
+            <a href="#home">Home</a>
+            <a href="#category/National">National</a>
+            <a href="#category/Business">Business</a>
+            <a href="#category/Technology">Technology</a>
+            <a href="#category/Sports">Sports</a>
+            <a href="#category/Entertainment">Entertainment</a>
+        </nav>
+        
+        <!-- Animated Ticker -->
+        <div class="ticker-wrap">
+            <div class="ticker-heading"><span class="live-dot"></span>BREAKING NEWS</div>
+            <div class="ticker-move" id="ticker-content"></div>
+        </div>
+    </header>
+
+    <!-- Reading progress bar (article view) -->
+    <div class="progress-bar" id="progress-bar"></div>
+
+    <!-- Back to top -->
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+
+    <!-- Custom cursor -->
+    <div class="cursor-ring hidden" id="cursor-ring"></div>
+    <div class="cursor-dot hidden" id="cursor-dot"></div>
+
+    <!-- Autoplay fallback prompt -->
+    <div id="video-enable-prompt" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; padding:10px 22px; border-radius:30px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; z-index:9999; display:none; box-shadow:0 4px 15px rgba(0,0,0,0.3); cursor:pointer;">Tap to play videos</div>
+
+    <!-- SPA VIEWS -->
+    <main>
+        <!-- 1. HOME VIEW -->
+        <div id="home-view" class="view-section active">
+            <div class="home-grid">
+                <div class="hero-article" id="home-hero"></div>
+                <aside class="sidebar" id="home-sidebar"></aside>
+            </div>
+            
+            <!-- Standard News Grid -->
+            <div class="secondary-news" id="home-grid-news" style="margin-top: 40px; border-top: 4px double var(--text-main); padding-top: 30px;"></div>
+
+            <!-- Video News Grid -->
+            <h3 class="serif section-divider">Featured Video Reports</h3>
+            <div class="video-grid" id="home-video-news"></div>
+        </div>
+
+        <!-- 2. CATEGORY VIEW -->
+        <div id="category-view" class="view-section">
+            <h2 class="serif" id="category-title" style="font-size: 2.5rem; margin-bottom: 30px; border-bottom: 2px solid var(--text-main); padding-bottom: 10px;">Category</h2>
+            <div class="secondary-news" id="category-content" style="border-top: none; padding-top: 0; margin-top: 0;"></div>
+        </div>
+
+        <!-- 3. ARTICLE VIEW -->
+        <div id="article-view" class="view-section">
+            <div id="article-content"></div>
+            
+            <!-- Related Videos Section (injected dynamically) -->
+            <div id="article-related-videos" style="display: none; margin-top: 60px;">
+                <h3 class="serif section-divider">Related Videos</h3>
+                <div class="video-grid" id="article-videos-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Set Date
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const body = document.documentElement;
+            if(body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.innerText = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.innerText = 'Light Mode';
+            }
+        });
+
+        // --- EXTENDED NEWS DATABASE ---
+        const newsDatabase = [
+            {
+                id: 1,
+                title: "India Prepares for 80th Independence Day with Indigenous Tech and AI Innovations",
+                excerpt: "The 2026 celebrations at the Red Fort will feature real-time AI translation by 'Bhashini' into 22 Indian languages.",
+                content: "India is gearing up for its 80th Independence Day on August 15, 2026. This year's overarching theme aligns with the 'Viksit Bharat 2047' vision, placing a massive emphasis on technological self-reliance and green energy.\n\nFor the first time in history, every piece of ceremonial artillery and equipment used during the gun salute at the Red Fort is entirely manufactured in India. Furthermore, the 'Digital India Bhashini' AI engine will translate the Prime Minister's address in real-time across 22 native languages, showcasing India's leap in digital public infrastructure.",
+                category: "National",
+                image: "https://picsum.photos/seed/independence-day-india/1600/900",
+                author: "National Desk",
+                date: "August 8, 2026",
+                position: "hero"
+                
+            },
+            {
+                id: 2,
+                title: "Reliance Retail Launches Automated Drone Delivery in Mumbai Suburbs",
+                excerpt: "In a joint venture with Skylark Drones, groceries will now be delivered via autonomous drones to high-rise rooftops.",
+                content: "Marking a massive shift in last-mile logistics, Reliance Retail has officially launched pilot drone delivery services in select Mumbai suburbs including Bandra and Powai. Partnering with domestic startup Skylark Drones, the service promises 10-minute grocery deliveries directly to designated 'helipads' on residential high-rises.\n\nThis follows relaxed DGCA regulations announced earlier in 2026, aimed at clearing up urban road congestion.",
+                category: "Technology",
+                image: "https://picsum.photos/seed/drone-delivery-mumbai/1600/900",
+                author: "Tech Correspondent",
+                date: "August 8, 2026",
+                position: "grid"
+            },
+            {
+                id: 3,
+                title: "Neeraj Chopra Sets Eyes on the 2026 Diamond League Final in Brussels",
+                excerpt: "India's track and field icon is peaking at the right time, hitting a season-best 89.94m in training.",
+                content: "Olympic champion Neeraj Chopra is leaving no stone unturned as he prepares for the prestigious Diamond League finale next month in Brussels. Currently training in Switzerland, sources close to his camp report he consistently hit the 89-meter mark during practice sessions.\n\nFans are eagerly awaiting to see if 2026 will be the year he finally crosses the elusive 90-meter barrier in a competitive international meet.",
+                category: "Sports",
+                image: "https://picsum.photos/seed/javelin-athlete-training/1600/900",
+                author: "Sports Desk",
+                date: "August 8, 2026",
+                position: "grid"
+            },
+            {
+                id: 4,
+                title: "Indian Cinema Triumphs: Payal Kapadia's Latest Wins Big at Locarno",
+                excerpt: "Following her Cannes success, Kapadia's new indie drama sweeps three major awards at the Locarno Film Festival.",
+                content: "Indian independent cinema continues its golden run in 2026. Filmmaker Payal Kapadia's latest feature film has taken the prestigious Locarno Film Festival by storm, bagging the Golden Leopard.\n\nThe film, which explores the complexities of urban migration in a rapidly changing Kolkata, was praised by the international jury for its 'raw, unfiltered humanity and masterful cinematography.'",
+                category: "Entertainment",
+                image: "https://picsum.photos/seed/film-festival-cinema/1600/900",
+                author: "Arts & Culture",
+                date: "August 7, 2026", 
+                position: "grid"
+            },
+            {
+                id: 5,
+                title: "Tata Motors Unveils Next-Gen Solid State Battery for EVs",
+                excerpt: "The new proprietary battery offers a 700km range and 15-minute fast charge, set to revolutionize India's EV market.",
+                content: "Tata Motors claims their new proprietary battery will offer a 700km range and a 15-minute fast charge, revolutionizing the Indian EV market by Q4 2026.\n\nThe company says mass production will begin at its Sanand gigafactory, with the first vehicles fitted with the new cells rolling out in early 2027.",
+                category: "Business",
+                position: "sidebar"
+            },
+            {
+                id: 6,
+                title: "New Vande Bharat Sleeper Trains Connect Delhi to Srinagar",
+                excerpt: "The first overnight sleeper editions of the Vande Bharat express complete their trial runs successfully.",
+                content: "A major milestone in Indian Railways as the first overnight sleeper editions of the Vande Bharat express successfully complete their trial runs.\n\nThe new trains cut travel time between Delhi and Srinagar to under 13 hours and feature fully insulated cabins built for high-altitude winter conditions.",
+                category: "National",
+                position: "sidebar"
+            },
+            {
+                id: 7,
+                title: "Mumbai Stock Exchange Hits All-Time High Amidst Tech Boom",
+                excerpt: "Markets rallied early Friday following positive trade reports and strong Q2 earnings from major Indian IT firms.",
+                content: "Markets rallied early Friday following positive international trade reports and strong Q2 AI tech sector earnings from major Indian IT firms.\n\nAnalysts point to strong foreign institutional inflows and a weakening dollar index as additional tailwinds for the rally.",
+                category: "Business",
+                position: "sidebar"
+            },
+            {
+                id: 8,
+                title: "ISRO's Gaganyaan Crew Completes Final Vacuum Chamber Training",
+                excerpt: "India's first human spaceflight mission clears its last major ground-based simulation ahead of a planned 2027 launch window.",
+                content: "The four astronaut-designates for India's maiden human spaceflight mission Gaganyaan have completed their final vacuum chamber simulation at the Astronaut Training Facility in Bengaluru.\n\nISRO officials confirmed that the crew module's life-support systems performed flawlessly across a simulated 72-hour orbital stay, clearing the way for an uncrewed test flight later this year ahead of the crewed mission.",
+                category: "Technology",
+                image: "https://picsum.photos/seed/astronaut-training-facility/1600/900",
+                author: "Science Desk",
+                date: "August 8, 2026",
+                position: "grid"
+            },
+            {
+                id: 9,
+                title: "India vs Australia: Hosts Clinch Series with Dominant Test Win",
+                excerpt: "A spin masterclass on a turning fourth-day pitch hands India a series-clinching innings victory in Ahmedabad.",
+                content: "India wrapped up the third Test against Australia inside four days, with the spin trio combining for 17 wickets on a rapidly deteriorating Ahmedabad surface.\n\nThe win takes India 2-0 up in the four-match series, putting them firmly in control of the World Test Championship points table.",
+                category: "Sports",
+                image: "https://picsum.photos/seed/cricket-test-match-spin/1600/900",
+                author: "Sports Desk",
+                date: "August 8, 2026",
+                position: "grid"
+            },
+            {
+                id: 10,
+                title: "Monsoon Session: Parliament Passes Landmark Data Protection Amendment",
+                excerpt: "The amendment tightens consent rules for AI training data and introduces steeper penalties for breaches.",
+                content: "Both houses of Parliament passed the Digital Data Protection (Amendment) Bill 2026 on Friday, introducing stricter consent requirements for companies using personal data to train AI models.\n\nThe amendment also raises the maximum penalty for major data breaches to ₹500 crore and establishes a fast-track grievance redressal mechanism for citizens.",
+                category: "National",
+                image: "https://picsum.photos/seed/parliament-session-india/1600/900",
+                author: "Political Bureau",
+                date: "August 7, 2026",
+                position: "grid"
+            },
+            {
+                id: 11,
+                title: "Bollywood's Biggest Diwali Release Slate Unveiled",
+                excerpt: "Four major studios confirm a packed festive release calendar, setting up the year's biggest box-office clash.",
+                content: "Trade insiders are calling this the most stacked festive box-office lineup in years, with four big-budget releases confirmed for the same weekend around Diwali.\n\nExhibitors expect the clash to push single-day nationwide collections to a new record, with advance bookings already strong across metro multiplexes.",
+                category: "Entertainment",
+                image: "https://picsum.photos/seed/bollywood-diwali-premiere/1600/900",
+                author: "Arts & Culture",
+                date: "August 6, 2026",
+                position: "grid"
+            },
+            {
+                id: 12,
+                title: "RBI Holds Repo Rate Steady, Signals Cautious Optimism on Inflation",
+                excerpt: "The central bank kept rates unchanged for a third straight quarter while flagging easing food price pressures.",
+                content: "The Reserve Bank of India's Monetary Policy Committee voted unanimously to hold the repo rate at 6.25%, citing steady progress on headline inflation.\n\nThe RBI Governor noted that a normal monsoon and softening global crude prices give the committee room to stay watchful without tightening further.",
+                category: "Business",
+                position: "sidebar"
+            },
+            {
+                id: 13,
+                title: "Bengaluru Emerges as Asia's Top Hub for AI Startups, Report Finds",
+                excerpt: "A new industry report ranks the city ahead of Singapore and Shenzhen for AI startup funding density.",
+                content: "A new report from a leading venture research firm ranks Bengaluru as Asia's top hub for AI-focused startups by funding density, ahead of Singapore and Shenzhen.\n\nThe report credits a deep talent pool from the city's IT ecosystem along with favorable state government incentives for compute infrastructure.",
+                category: "Technology",
+                position: "sidebar"
+            },
+            {
+                id: 14,
+                title: "PV Sindhu Advances to Semifinals at China Open",
+                excerpt: "The two-time Olympic medalist storms past her quarterfinal opponent in straight games.",
+                content: "PV Sindhu produced a dominant display to reach the semifinals of the China Open, dropping just nine points across two games against her higher-ranked opponent.\n\nShe will face the tournament's top seed next, in what promises to be a rematch of last year's final.",
+                category: "Sports",
+                position: "sidebar"
+            }
+        ];
+
+        // --- VIDEO DATABASE ---
+        const videoDatabase = [
+            {
+                id: 101,
+                title: "Watch: Trial Run of the New Delhi-Srinagar Vande Bharat Sleeper",
+                category: "National",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4",
+                poster: "https://picsum.photos/seed/vande-bharat-sleeper-train/1200/675"
+            },
+            {
+                id: 102,
+                title: "Analysis: Why the Indian Stock Market is Surging",
+                category: "Business",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4",
+                poster: "https://picsum.photos/seed/stock-market-rally-mumbai/1200/675"
+            },
+            {
+                id: 103,
+                title: "Highlights: Neeraj Chopra's 89.94m Training Throw in Switzerland",
+                category: "Sports",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4",
+                poster: "https://picsum.photos/seed/javelin-athlete-training/1200/675"
+            },
+            {
+                id: 104,
+                title: "Inside ISRO's Astronaut Training Facility Ahead of Gaganyaan",
+                category: "Technology",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4",
+                poster: "https://picsum.photos/seed/astronaut-training-facility/1200/675"
+            },
+            {
+                id: 105,
+                title: "Ahmedabad Test: The Spin Spell That Sealed the Series",
+                category: "Sports",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4",
+                poster: "https://picsum.photos/seed/cricket-test-match-spin/1200/675"
+            },
+            {
+                id: 106,
+                title: "First Look: Diwali's Biggest Movie Trailers, Ranked",
+                category: "Entertainment",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4",
+                poster: "https://picsum.photos/seed/bollywood-diwali-premiere/1200/675"
+            }
+        ];
+
+        // --- SPA ROUTER & RENDER LOGIC ---
+        function handleRoute() {
+            const hash = window.location.hash.substring(1) || 'home';
+            const [view, param] = hash.split('/');
+            
+            document.querySelectorAll('#main-nav a').forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href') === `#${hash}` || (view === 'home' && link.getAttribute('href') === '#home')) {
+                    link.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+                void el.offsetWidth; // trigger reflow for animation
+            });
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (view === 'home') {
+                document.getElementById('home-view').classList.add('active');
+                renderHome();
+            } else if (view === 'category') {
+                document.getElementById('category-view').classList.add('active');
+                renderCategory(param);
+            } else if (view === 'article') {
+                document.getElementById('article-view').classList.add('active');
+                renderArticle(parseInt(param));
+            }
+        }
+
+        window.addEventListener('hashchange', handleRoute);
+
+        // --- ENTRANCE ANIMATIONS ---
+        // CSS keyframe animation runs the moment the class is applied — no
+        // scroll-into-view dependency, so it's always visible on page load
+        // and every route change.
+        function applyReveal(selector) {
+            document.querySelectorAll(selector).forEach((el, i) => {
+                el.classList.remove('reveal');
+                void el.offsetWidth; // restart animation if re-applied
+                el.style.animationDelay = `${Math.min(i * 0.08, 0.6)}s`;
+                el.classList.add('reveal');
+            });
+        }
+
+        // --- BACK TO TOP ---
+        const backToTopBtn = document.getElementById('back-to-top');
+        backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // --- READING PROGRESS BAR (article view) ---
+        const progressBar = document.getElementById('progress-bar');
+        function updateProgressBar() {
+            const articleView = document.getElementById('article-view');
+            if (!articleView.classList.contains('active')) {
+                progressBar.style.width = '0%';
+                return;
+            }
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = `${pct}%`;
+        }
+
+        window.addEventListener('scroll', () => {
+            backToTopBtn.classList.toggle('show', window.scrollY > 400);
+            updateProgressBar();
+        });
+
+        function initTicker() {
+            const tickerContainer = document.getElementById('ticker-content');
+            const breakingNews = newsDatabase.slice(0, 4);
+            let tickerHTML = '';
+            for(let i=0; i<2; i++) { // Duplicate for seamless infinite scroll
+                breakingNews.forEach(article => {
+                    tickerHTML += `<div class="ticker-item" onclick="location.hash='article/${article.id}'">► ${article.title}</div>`;
+                });
+            }
+            tickerContainer.innerHTML = tickerHTML;
+        }
+
+        // Force-play videos injected via innerHTML (some browsers ignore the
+        // autoplay attribute on dynamically inserted markup)
+        function forcePlayVideos(container) {
+            container.querySelectorAll('video').forEach(v => {
+                v.muted = true; // required for reliable autoplay
+                const p = v.play();
+                if (p !== undefined) {
+                    p.catch(() => {
+                        // Autoplay blocked by the browser — show a one-tap fallback
+                        videoEnablePrompt.style.display = 'block';
+                    });
+                }
+            });
+        }
+
+        // If any video couldn't autoplay, a single click/tap anywhere starts them all
+        const videoEnablePrompt = document.getElementById('video-enable-prompt');
+        function enableAllVideos() {
+            document.querySelectorAll('video').forEach(v => {
+                v.muted = true;
+                v.play().catch(() => {});
+            });
+            videoEnablePrompt.style.display = 'none';
+        }
+        videoEnablePrompt.addEventListener('click', enableAllVideos);
+        document.body.addEventListener('click', enableAllVideos, { once: true });
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) forcePlayVideos(document);
+        });
+
+        // --- Custom cursor: dot + trailing ring that reacts to interactive elements ---
+        (function initCustomCursor() {
+            const isTouch = window.matchMedia('(hover: none)').matches;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (isTouch || reduceMotion) return;
+
+            document.body.classList.add('custom-cursor-active');
+            const dot = document.getElementById('cursor-dot');
+            const ring = document.getElementById('cursor-ring');
+            dot.classList.remove('hidden');
+            ring.classList.remove('hidden');
+
+            let ringX = 0, ringY = 0, targetX = 0, targetY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                targetX = e.clientX;
+                targetY = e.clientY;
+                dot.style.left = `${targetX}px`;
+                dot.style.top = `${targetY}px`;
+            });
+
+            function animateRing() {
+                ringX += (targetX - ringX) * 0.18;
+                ringY += (targetY - ringY) * 0.18;
+                ring.style.left = `${ringX}px`;
+                ring.style.top = `${ringY}px`;
+                requestAnimationFrame(animateRing);
+            }
+            animateRing();
+
+            document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+            document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+            const hoverSelector = 'a, button, .card, .grid-article, .video-card, .hero-article, .side-article, .ticker-item, [onclick]';
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest(hoverSelector)) ring.classList.add('hovering');
+            });
+            document.addEventListener('mouseout', (e) => {
+                if (e.target.closest(hoverSelector)) ring.classList.remove('hovering');
+            });
+        })();
+
+        function generateVideoCardHTML(video) {
+            return `
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <div class="play-badge live-badge"><span class="live-dot"></span>PLAYING</div>
+                        <button class="mute-btn" onclick="event.stopPropagation(); const v=this.nextElementSibling; v.muted=!v.muted; this.innerText=v.muted?'🔇':'🔊';">🔇</button>
+                        <video autoplay muted loop playsinline preload="auto" poster="${video.poster}">
+                            <source src="${video.url}" type="video/mp4">
+                        </video>
+                    </div>
+                    <span class="meta">${video.category}</span>
+                    <h3 class="grid-title" style="font-size: 1.1rem;">${video.title}</h3>
+                </div>
+            `;
+        }
+
+        function renderHome() {
+            const heroEl = document.getElementById('home-hero');
+            const sidebarEl = document.getElementById('home-sidebar');
+            const gridEl = document.getElementById('home-grid-news');
+            const videoGridEl = document.getElementById('home-video-news');
+            
+            sidebarEl.innerHTML = '<h3>Latest Briefings</h3>';
+            gridEl.innerHTML = '';
+            videoGridEl.innerHTML = '';
+
+            // Render Articles
+            newsDatabase.forEach(article => {
+                if (article.position === "hero") {
+                    heroEl.innerHTML = `
+                        <div onclick="location.hash='article/${article.id}'">
+                            <span class="meta">${article.category}</span>
+                            <h1 class="hero-title">${article.title}</h1>
+                            <div class="hero-img-wrapper"><img src="${article.image}" alt="Hero Image" class="hero-img"></div>
+                            <p class="hero-excerpt">${article.excerpt}</p>
+                        </div>
+                    `;
+                } else if (article.position === "sidebar") {
+                    sidebarEl.innerHTML += `
+                        <article class="side-article" onclick="location.hash='article/${article.id}'">
+                            <span class="meta">${article.category}</span>
+                            <h4 class="side-title">${article.title}</h4>
+                        </article>
+                    `;
+                } else if (article.position === "grid") {
+                    gridEl.innerHTML += `
+                        <article class="grid-article" onclick="location.hash='article/${article.id}'">
+                            <div class="grid-img-wrapper"><img src="${article.image}" alt="Grid Image"></div>
+                            <span class="meta">${article.category}</span>
+                            <h3 class="grid-title">${article.title}</h3>
+                            <p class="hero-excerpt" style="font-size: 0.95rem;">${article.excerpt}</p>
+                        </article>
+                    `;
+                }
+            });
+
+            // Render Featured Videos
+            videoDatabase.forEach(video => {
+                videoGridEl.innerHTML += generateVideoCardHTML(video);
+            });
+            forcePlayVideos(videoGridEl);
+
+            applyReveal('#home-grid-news .grid-article');
+            applyReveal('#home-sidebar .side-article');
+            applyReveal('#home-video-news .video-card');
+        }
+
+        function renderCategory(catName) {
+            document.getElementById('category-title').innerText = `${catName} News`;
+            const container = document.getElementById('category-content');
+            container.innerHTML = '';
+
+            const filtered = newsDatabase.filter(a => a.category === catName);
+            if(filtered.length === 0) {
+                container.innerHTML = `<p>No recent news found in ${catName}.</p>`;
+                return;
+            }
+
+            filtered.forEach(article => {
+                container.innerHTML += `
+                    <article class="grid-article" onclick="location.hash='article/${article.id}'">
+                        ${article.image ? `<div class="grid-img-wrapper"><img src="${article.image}" alt="Grid Image"></div>` : ''}
+                        <span class="meta">${article.category}</span>
+                        <h3 class="grid-title">${article.title}</h3>
+                        ${article.excerpt ? `<p class="hero-excerpt" style="font-size: 0.95rem;">${article.excerpt}</p>` : ''}
+                    </article>
+                `;
+            });
+
+            applyReveal('#category-content .grid-article');
+        }
+
+        function renderArticle(id) {
+            const article = newsDatabase.find(a => a.id === id);
+            const contentContainer = document.getElementById('article-content');
+            const videoWrapper = document.getElementById('article-related-videos');
+            const videoContainer = document.getElementById('article-videos-container');
+            
+            if(!article) {
+                contentContainer.innerHTML = "<h2>Article not found.</h2>";
+                videoWrapper.style.display = 'none';
+                return;
+            }
+
+            const formattedContent = article.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            contentContainer.innerHTML = `
+                <div class="article-header">
+                    <span class="meta">${article.category}</span>
+                    <h1 class="article-title">${article.title}</h1>
+                    <div class="article-meta">By <strong>${article.author || 'Staff Writer'}</strong> | Published: ${article.date || 'August 2026'}</div>
+                </div>
+                ${article.image ? `<img src="${article.image}" class="article-hero-img">` : ''}
+                <div class="article-body">${formattedContent}</div>
+            `;
+
+            // Load Related Videos dynamically based on article category
+            const relatedVideos = videoDatabase.filter(v => v.category === article.category);
+            if (relatedVideos.length > 0) {
+                videoWrapper.style.display = 'block';
+                videoContainer.innerHTML = '';
+                relatedVideos.forEach(video => {
+                    videoContainer.innerHTML += generateVideoCardHTML(video);
+                });
+                forcePlayVideos(videoContainer);
+                applyReveal('#article-videos-container .video-card');
+            } else {
+                videoWrapper.style.display = 'none';
+            }
+
+            updateProgressBar();
+        }
+
+        // Boot app
+        initTicker();
+        handleRoute();
+    </script>
+</body>
+</html>
