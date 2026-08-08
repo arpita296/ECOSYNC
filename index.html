@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSync - Real-Time API Demo</title>
+    <style>
+        /* --- NORMAL WEBSITE STYLES --- */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            transition: all 0.5s ease;
+        }
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .media-container {
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .eco-heavy {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+        }
+
+        /* --- ECOSYNC "DIRTY GRID" STYLES --- */
+        body.eco-mode {
+            background-color: #000000 !important;
+            color: #4ade80 !important;
+        }
+        body.eco-mode header {
+            background: #111 !important;
+            color: #4ade80 !important;
+            border-bottom: 1px solid #4ade80;
+        }
+        body.eco-mode .eco-heavy {
+            display: none;
+        }
+        .eco-placeholder {
+            display: none;
+            padding: 40px;
+            border: 2px dashed #4ade80;
+            border-radius: 12px;
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+        }
+        body.eco-mode .eco-placeholder {
+            display: block;
+        }
+        .load-anyway-btn {
+            background: transparent;
+            color: #4ade80;
+            border: 1px solid #4ade80;
+            padding: 10px 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .load-anyway-btn:hover {
+            background: #4ade80;
+            color: black;
+        }
+
+        /* --- DASHBOARDS & BUTTONS --- */
+        .demo-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+        }
+        .grid-button {
+            padding: 15px 25px;
+            background: #ff007f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .carbon-dashboard {
+            background: #222;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            font-family: monospace;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>EcoSync </h1>
+        <p>Testing Real-Time API Grid Connection</p>
+    </header>
+
+    <div class="content">
+        <h2>Beautiful High-Res Photography</h2>
+        <div class="media-container" id="container-1">
+            <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=800&q=80" alt="Landscape" class="eco-heavy">
+            <div class="eco-placeholder">
+                <h3>High-Res Image Intercepted</h3>
+                <p>Media paused to save 2.4 MB of data.</p>
+                <button class="load-anyway-btn" onclick="loadAnyway('container-1', 2.4)">Load Anyway</button>
+            </div>
+        </div>
+
+        <h2>High-Definition Video File</h2>
+        <div class="media-container" id="container-2">
+            <video class="eco-heavy" controls autoplay muted loop>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
+            <div class="eco-placeholder">
+                <h3>4K Video Intercepted</h3>
+                <p>Media paused to save 12.0 MB of data.</p>
+                <button class="load-anyway-btn" onclick="loadAnyway('container-2', 12.0)">Load Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Dashboard -->
+    <!-- <div class="demo-controls">
+        <div class="carbon-dashboard">
+            
+            <div style="margin-top: 5px; color: #4ade80;">
+                Data Saved: <span id="data-saved">0</span> MB<br>
+                CO2 Prevented: <span id="co2-saved">0.00</span> g
+            </div>
+        </div>
+        
+        
+    </div> -->
+
+    <script src="script.js"></script>
+   
+</body>
+</html>

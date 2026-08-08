@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER | Modern News</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+    <!-- GSAP for Scroll Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js" defer></script>
+
+    <style>
+        /* Light Theme & Glassmorphism Variables */
+        :root {
+            --bg-base: #ffffff;
+            --bg-alt: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --neon-accent: #2563eb; 
+            --neon-hover: #1d4ed8;
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --shadow-base: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --transition-speed: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all var(--transition-speed);
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .logo span { color: var(--neon-accent); }
+
+        nav ul { display: flex; list-style: none; gap: 2.5rem; }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0; width: 0; height: 2px;
+            background: var(--neon-accent);
+            transition: width 0.3s;
+        }
+        nav a:hover { color: var(--neon-accent); }
+        nav a:hover::after { width: 100%; }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--neon-accent);
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: var(--neon-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* --- Top News Carousel (Swiper) --- */
+        .top-news-section {
+            position: relative;
+            height: 90vh;
+            width: 100%;
+            background: #0f172a;
+        }
+
+        .swiper { width: 100%; height: 100%; }
+
+        .swiper-slide {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            overflow: hidden;
+            background: #1e293b;
+        }
+
+        .slide-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            background-color: #1e293b;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            padding: 5% 8%;
+            width: 100%;
+            max-width: 1000px;
+            color: #fff;
+        }
+
+        .slide-badge {
+            display: inline-block;
+            background: var(--neon-accent);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .slide-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2rem, 4vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .slide-desc {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Swiper Controls */
+        .swiper-button-next, .swiper-button-prev { color: #fff !important; }
+        .swiper-pagination-bullet { background: #fff !important; opacity: 0.5; }
+        .swiper-pagination-bullet-active { opacity: 1; background: var(--neon-accent) !important; }
+
+        /* --- Grid Section --- */
+        main {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 3.5rem;
+            font-weight: 800;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px; left: 0; width: 40%; height: 4px;
+            background: var(--neon-accent);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        /* --- Card Design --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-base);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            transition: all var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            min-height: 460px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover), 0 10px 25px rgba(37, 99, 235, 0.15);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .card-media {
+            position: relative;
+            height: 240px;
+            /* Using a light slate gray so it never looks black if slow loading */
+            background: #cbd5e1; 
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .card-media img, 
+        .card-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-speed);
+            display: block;
+        }
+
+        .card:hover .card-media img,
+        .card:hover .card-media video {
+            transform: scale(1.08);
+        }
+
+        .media-badge {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: rgba(15, 23, 42, 0.85);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+        }
+
+        .has-video .media-badge { background: rgba(37, 99, 235, 0.9); }
+
+        .card-content {
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-category {
+            color: var(--neon-accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 1.2rem;
+        }
+
+        .author-info {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            flex-direction: column;
+        }
+        .author-info strong { color: var(--text-primary); }
+
+        /* --- Article Modal (Popup) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-base);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 20px;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(30px);
+            transition: all 0.4s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        .modal-close:hover { background: var(--neon-accent); }
+
+        .modal-media-container {
+            width: 100%;
+            height: 400px;
+            background: #cbd5e1;
+            position: relative;
+        }
+        
+        .modal-media-container img, 
+        .modal-media-container video {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .modal-body { padding: 3rem; }
+        .modal-body h2 { font-family: 'Poppins', sans-serif; font-size: 2rem; margin-bottom: 1rem; color: var(--text-primary); }
+        .modal-body p { color: var(--text-secondary); line-height: 1.8; font-size: 1.05rem; margin-bottom: 1.5rem; }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--bg-alt);
+            padding: 4rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Play Notification Fallback */
+        .play-prompt {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) { .news-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .news-grid { grid-template-columns: 1fr; }
+            .slide-title { font-size: 2.2rem; }
+            nav ul { display: none; }
+            .modal-media-container { height: 250px; }
+            .modal-body { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Autoplay Override Alert -->
+    <div id="playPrompt" class="play-prompt">Tap anywhere to enable videos</div>
+
+    <header id="main-header">
+        <div class="logo" onclick="window.scrollTo(0,0)">AE<span>THER</span></div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#news-feed">News Feed</a></li>
+                <li><a href="#footer-section">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- TOP NEWS SWIPER CAROUSEL (100% VIDEOS) -->
+    <section class="top-news-section" id="home">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                
+                <!-- Slide 1: Video -->
+                <div class="swiper-slide article-data-source">
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-badge category-data">Animation Tech</span>
+                        <h2 class="slide-title title-data">CGI Rendering Reaches New Milestones</h2>
+                        <p class="slide-desc desc-data">Global animation studios showcase the absolute limits of 4K rendering and character rigging in independent short films.</p>
+                        <button class="btn action-read">Read Full Article</button>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Video -->
+                <div class="swiper-slide article-data-source">
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4" type="video/mp4">
+                    </video>
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-badge category-data">Infrastructure</span>
+                        <h2 class="slide-title title-data">Urban Developments Accelerate in 2026</h2>
+                        <p class="slide-desc desc-data">New architectural advancements are completely reshaping modern skylines and daily commutes around the world.</p>
+                        <button class="btn action-read">Read Full Article</button>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Video -->
+                <div class="swiper-slide article-data-source">
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                    </video>
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <span class="slide-badge category-data">Entertainment</span>
+                        <h2 class="slide-title title-data">Broadcast Networks Evolve the Web</h2>
+                        <p class="slide-desc desc-data">An inside look at how independent studios are utilizing massive cloud clusters to generate media entirely remotely.</p>
+                        <button class="btn action-read">Read Full Article</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Swiper UI Elements -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- GRID SECTION -->
+    <main id="news-feed">
+        <h2 class="section-title">Latest Updates</h2>
+        
+        <div class="news-grid">
+            
+            <!-- Grid Card 1: Video -->
+            <article class="card has-video article-data-source">
+                <div class="card-media">
+                    <span class="media-badge">4K Video</span>
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="card-content">
+                    <span class="card-category category-data">Animation</span>
+                    <h3 class="card-title title-data">Open Source Animation Reaches New Heights</h3>
+                    <p class="card-desc desc-data">Independent researchers document incredible new rendering techniques in global open-source projects.</p>
+                    <div class="card-footer">
+                        <div class="author-info"><strong>Sarah Chen</strong><span>4 hours ago</span></div>
+                        <button class="btn action-read">Read</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Grid Card 2: Photo -->
+            <article class="card article-data-source">
+                <div class="card-media">
+                    <span class="media-badge">Gallery</span>
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Landscape" class="slide-bg">
+                </div>
+                <div class="card-content">
+                    <span class="card-category category-data">Ecology</span>
+                    <h3 class="card-title title-data">Global Conservation Efforts in Yosemite</h3>
+                    <p class="card-desc desc-data">A massive new initiative funded by tech giants aims to preserve national parks for the next century.</p>
+                    <div class="card-footer">
+                        <div class="author-info"><strong>Elena Rostova</strong><span>8 hours ago</span></div>
+                        <button class="btn action-read">Read</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Grid Card 3: Video -->
+            <article class="card has-video article-data-source">
+                <div class="card-media">
+                    <span class="media-badge">4K Video</span>
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="card-content">
+                    <span class="card-category category-data">Travel</span>
+                    <h3 class="card-title title-data">Ecotourism Peaks Across Coastal Reserves</h3>
+                    <p class="card-desc desc-data">Mobile-powered applications are helping travelers understand their ecological impact in real time.</p>
+                    <div class="card-footer">
+                        <div class="author-info"><strong>Marcus Lin</strong><span>10 hours ago</span></div>
+                        <button class="btn action-read">Read</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ========================================== -->
+            <!-- FIXED: Grid Card 4: Video                  -->
+            <!-- Swapped broken link for Mozilla test video -->
+            <!-- ========================================== -->
+            <article class="card has-video article-data-source">
+                <div class="card-media">
+                    <span class="media-badge">4K Video</span>
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="card-content">
+                    <span class="card-category category-data">Creative</span>
+                    <h3 class="card-title title-data">Fantasy Filmmaking Transforms Digital Art</h3>
+                    <p class="card-desc desc-data">An inside look at how independent studios are utilizing massive cloud clusters to generate worlds.</p>
+                    <div class="card-footer">
+                        <div class="author-info"><strong>Kaelen Vance</strong><span>12 hours ago</span></div>
+                        <button class="btn action-read">Read</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Grid Card 5: Video -->
+            <article class="card has-video article-data-source">
+                <div class="card-media">
+                    <span class="media-badge">4K Video</span>
+                    <video autoplay loop muted playsinline class="slide-bg">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="card-content">
+                    <span class="card-category category-data">Cinema</span>
+                    <h3 class="card-title title-data">VFX Breakthroughs in Independent Filmmaking</h3>
+                    <p class="card-desc desc-data">A decade-long study concludes that small studios have developed entirely new CGI rendering methods.</p>
+                    <div class="card-footer">
+                        <div class="author-info"><strong>Liam Frost</strong><span>1 day ago</span></div>
+                        <button class="btn action-read">Read</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ========================================== -->
+            <!-- FIXED: Grid Card 6: Photo                  -->
+            <!-- Swapped broken Unsplash for reliable image -->
+            <!-- ========================================== -->
+            <article class="card article-data-source">
+                <div class="card-media">
+                    <span class="media-badge">Photography</span>
+                    <!-- Using a very famous, stable Unsplash ID of a laptop/code -->
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Code Workspace" class="slide-bg">
+                </div>
+                <div class="card-content">
+                    <span class="card-category category-data">Design</span>
+                    <h3 class="card-title title-data">The Rise of Brutalist Web Design in 2026</h3>
+                    <p class="card-desc desc-data">Why major corporations are ditching minimalist interfaces for raw, structural, code-forward aesthetics.</p>
+                    <div class="card-footer">
+                        <div class="author-info"><strong>Nova Raine</strong><span>2 days ago</span></div>
+                        <button class="btn action-read">Read</button>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <footer id="footer-section">
+        <div class="footer-logo">AETHER</div>
+        <p>&copy; 2026 Aether Media Network. All rights reserved.</p>
+    </footer>
+
+    <!-- ARTICLE MODAL OVERLAY -->
+    <div class="modal-overlay" id="articleModal">
+        <div class="modal-content">
+            <div class="modal-close" id="closeModal">&times;</div>
+            <div class="modal-media-container" id="modalMedia"></div>
+            <div class="modal-body">
+                <h4 id="modalCategory" style="color: var(--neon-accent); text-transform: uppercase; margin-bottom: 10px; font-weight: 700;"></h4>
+                <h2 id="modalTitle">Article Title</h2>
+                <p id="modalDesc" style="font-weight: 600; color: #1e293b;"></p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- 1. Swiper Carousel Initialization ---
+            const swiper = new Swiper(".mySwiper", {
+                spaceBetween: 0,
+                centeredSlides: true,
+                loop: true,
+                speed: 800,
+                autoplay: { delay: 7000, disableOnInteraction: false },
+                pagination: { el: ".swiper-pagination", clickable: true },
+                navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                effect: "slide",
+                grabCursor: true
+            });
+
+            // --- 2. FOOLPROOF VIDEO AUTOPLAY LOGIC ---
+            const allVideos = document.querySelectorAll('video');
+            const playPrompt = document.getElementById('playPrompt');
+            let needsInteraction = false;
+
+            allVideos.forEach(vid => {
+                vid.muted = true;
+                const playPromise = vid.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        needsInteraction = true;
+                        playPrompt.style.display = 'block';
+                    });
+                }
+            });
+
+            // If blocked, one click anywhere fixes it
+            if (needsInteraction || true) {
+                document.body.addEventListener('click', () => {
+                    allVideos.forEach(vid => {
+                        vid.muted = true;
+                        vid.play().catch(()=>{});
+                    });
+                    playPrompt.style.display = 'none';
+                }, { once: true });
+            }
+
+            const videoCards = document.querySelectorAll('.card.has-video');
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+            videoCards.forEach(card => {
+                const video = card.querySelector('video');
+                if (!video) return;
+
+                if (!isTouch) {
+                    card.addEventListener('mouseenter', () => video.play().catch(()=>{}));
+                } else {
+                    card.querySelector('.card-media').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        video.paused ? video.play().catch(()=>{}) : video.pause();
+                    });
+                }
+            });
+
+            // --- 3. Dynamic Article Modal Logic ---
+            const modalOverlay = document.getElementById('articleModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const modalMedia = document.getElementById('modalMedia');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalDesc = document.getElementById('modalDesc');
+
+            document.querySelectorAll('.action-read').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault(); e.stopPropagation();
+
+                    const source = btn.closest('.article-data-source');
+                    const title = source.querySelector('.title-data').innerText;
+                    const desc = source.querySelector('.desc-data').innerText;
+                    const category = source.querySelector('.category-data').innerText;
+                    const mediaElement = source.querySelector('.slide-bg');
+                    
+                    let mediaHTML = '';
+                    if (mediaElement.tagName.toLowerCase() === 'video') {
+                        const videoSrc = mediaElement.querySelector('source').src;
+                        mediaHTML = `<video autoplay loop controls playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                                        <source src="${videoSrc}" type="video/mp4">
+                                     </video>`;
+                    } else if (mediaElement.tagName.toLowerCase() === 'img') {
+                        mediaHTML = `<img src="${mediaElement.src}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    }
+
+                    modalTitle.innerText = title;
+                    modalDesc.innerText = desc;
+                    modalCategory.innerText = category;
+                    modalMedia.innerHTML = mediaHTML;
+
+                    modalOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; 
+                });
+            });
+
+            const closeModal = () => {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto'; 
+                setTimeout(() => { modalMedia.innerHTML = ''; }, 400); 
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+
+            // --- 4. GSAP Animations & Header ---
+            const initGSAP = setInterval(() => {
+                if (window.gsap && window.ScrollTrigger) {
+                    clearInterval(initGSAP);
+                    gsap.registerPlugin(ScrollTrigger);
+
+                    gsap.from('.card', {
+                        scrollTrigger: { trigger: '.news-grid', start: 'top 85%' },
+                        y: 50, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out', clearProps: 'all'
+                    });
+                    
+                    const header = document.getElementById('main-header');
+                    window.addEventListener('scroll', () => {
+                        if (window.scrollY > 50) {
+                            header.style.padding = '0.8rem 5%';
+                            header.style.background = 'rgba(255, 255, 255, 0.95)';
+                            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+                        } else {
+                            header.style.padding = '1.2rem 5%';
+                            header.style.background = 'rgba(255, 255, 255, 0.8)';
+                            header.style.boxShadow = 'none';
+                        }
+                    });
+                }
+            }, 100);
+        });
+    </script>
+    
+</body>
+</html>
